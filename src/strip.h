@@ -1,0 +1,3 @@
+void setupStrip();
+
+void loopStrip();
