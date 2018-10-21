@@ -35,7 +35,6 @@ void loopWifi()
 void setupWifi()
 {
   WiFiManager wifiManager;
-  write_to_log(wifiManager.getConfigPortalSSID());
   //reset saved settings
   // wifiManager.resetSettings();
 
@@ -46,7 +45,9 @@ void setupWifi()
   //if it does not connect it starts an access point with the specified name
   //here  "AutoConnectAP"
   //and goes into a blocking loop awaiting configuration
-  wifiManager.autoConnect("AutoConnectAP");
+  wifiManager.setConfigPortalTimeout(180);
+  wifiManager.autoConnect("RoyLightAP");
+  write_to_log(wifiManager.getConfigPortalSSID());
   //or use this for auto generated name ESP + ChipID
   //wifiManager.autoConnect();
 }
