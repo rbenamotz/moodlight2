@@ -8,6 +8,7 @@ int currentColor[3] = {0, 0, 0};
 int targetColor[3];
 unsigned long lastChange = 0;
 unsigned int lastGlobalStateVersionHandled = 0;
+bool isLightOn = true;
 
 void chooseRandomTargetColor()
 {
@@ -35,13 +36,26 @@ void loopStrip()
 {
     if (globalState.version > lastGlobalStateVersionHandled)
     {
+        lastGlobalStateVersionHandled = globalState.version;
+        lastChange = millis();
+        if (!globalState.isLightOn)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                digitalWrite(rgbPins[i], false);
+            }
+            return;
+        }
+
         for (int i = 0; i < 3; i++)
         {
             targetColor[i] = globalState.userSetColor[i];
             lastColor[i] = currentColor[i];
         }
-        lastGlobalStateVersionHandled = globalState.version;
-        lastChange = millis();
+        return;
+    }
+    if (!globalState.isLightOn)
+    {
         return;
     }
     unsigned long l = millis() - lastChange;
@@ -50,18 +64,20 @@ void loopStrip()
         for (int i = 0; i < 3; i++)
         {
             int pin = rgbPins[i];
-            int delta = targetColor[i] - currentColor[i];
+            int delta = targetColor[i] - lastColor[i];
             int step = int(delta * (l / float(globalState.animationTimeMs)));
-            int newPwm = currentColor[i] + step;
+            int newPwm = lastColor[i] + step;
             currentColor[i] = newPwm;
-            analogWrite(pin, newPwm);
+            float brightnessFactor = globalState.brightness / (float)BRIGHTNESS_MAX;
+            analogWrite(pin, (int)(newPwm * brightnessFactor));
         }
     }
     if (globalState.isAutoChangeColor && l >= globalState.updateInternalSeconds * 1000)
     {
         for (int i = 0; i < 3; i++)
         {
-            currentColor[i] = targetColor[i];
+            lastColor[i] = currentColor[i];
+            // currentColor[i] = targetColor[i];
         }
         chooseRandomTargetColor();
         lastChange = millis();

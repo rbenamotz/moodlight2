@@ -5,7 +5,7 @@
 #include "ota.h"
 #include <ArduinoJson.h>
 
-#define CONFIG_JSON_PATTERN "{\"color\" : {\"r\": %d,\"g\":%d,\"b\":%d},\"autoupdate\":{\"enabled\":%d,\"interval\":%d},\"animationTimeMs\":%d }"
+#define CONFIG_JSON_PATTERN "{\"isLightOn\" : %d, \"color\" : {\"r\": %d,\"g\":%d,\"b\":%d},\"autoupdate\":{\"enabled\":%d,\"interval\":%d},\"animationTimeMs\":%d,\"brightness\" : %d }"
 
 ESP8266WebServer server(80);
 const char* ROOT_PAGE = STATIC_PAGE_HOME;
@@ -13,10 +13,10 @@ const char* ROOT_PAGE = STATIC_PAGE_HOME;
 void readConfig()
 {
   char temp[200];
-  int r = globalState.userSetColor[0];
-  int g = globalState.userSetColor[1];
-  int b = globalState.userSetColor[2];
-  sprintf(temp, CONFIG_JSON_PATTERN, r, g, b, globalState.isAutoChangeColor, globalState.updateInternalSeconds, globalState.animationTimeMs);
+  int r = map(globalState.userSetColor[0],0,PWMRANGE,0,255);
+  int g = map(globalState.userSetColor[1],0,PWMRANGE,0,255);
+  int b = map(globalState.userSetColor[2],0,PWMRANGE,0,255);
+  sprintf(temp, CONFIG_JSON_PATTERN, globalState.isLightOn, r, g, b, globalState.isAutoChangeColor, globalState.updateInternalSeconds, globalState.animationTimeMs, globalState.brightness );
   server.send(200, "application/json", temp);
 }
 
@@ -24,7 +24,7 @@ void handleConfig()
 {
   StaticJsonBuffer<300> jsonBuffer;
   JsonObject &root = jsonBuffer.parseObject(server.arg("plain"), 3);
-  write_to_log(server.arg("plain"));
+  // write_to_log(server.arg("plain"));
 
   if (!root.success())
   {
@@ -32,9 +32,9 @@ void handleConfig()
     write_to_log("parseObject() failed");
     return;
   }
-  globalState.userSetColor[0] = root["color"]["r"];
-  globalState.userSetColor[1] = root["color"]["g"];
-  globalState.userSetColor[2] = root["color"]["b"];
+  globalState.userSetColor[0] = map(root["color"]["r"],0,255,0,PWMRANGE) ;
+  globalState.userSetColor[1] = map(root["color"]["g"],0,255,0,PWMRANGE) ;
+  globalState.userSetColor[2] = map(root["color"]["b"],0,255,0,PWMRANGE) ;
   int temp = root["autoupdate"]["enabled"];
   globalState.isAutoChangeColor = (temp == 1);
   globalState.updateInternalSeconds = root["autoupdate"]["interval"];
@@ -42,6 +42,13 @@ void handleConfig()
   {
     globalState.animationTimeMs = root["animationTimeMs"];
   }
+  if (root["brightness"])
+  {
+    globalState.brightness = root["brightness"];
+    write_to_log("set brightness to %d" , globalState.brightness);
+  }
+  globalState.isLightOn = root["isLightOn"];
+  write_to_log("set light on to %d" , globalState.isLightOn);
   globalState.version++;
   server.send(200, "text/plain", "ok");
 }

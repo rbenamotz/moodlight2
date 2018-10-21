@@ -1,6 +1,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#define BRIGHTNESS_MAX 100
+
 #include <Arduino.h>
 #include "user_config.h"
 
@@ -16,6 +18,7 @@ typedef struct {
     unsigned int updateInternalSeconds;
     unsigned int version;
     unsigned int animationTimeMs;
+    unsigned int brightness;
 } moodLightState;
 
 

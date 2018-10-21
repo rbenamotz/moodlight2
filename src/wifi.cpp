@@ -35,19 +35,7 @@ void loopWifi()
 void setupWifi()
 {
   WiFiManager wifiManager;
-  //reset saved settings
-  // wifiManager.resetSettings();
-
-  //set custom ip for portal
-  //wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
-
-  //fetches ssid and pass from eeprom and tries to connect
-  //if it does not connect it starts an access point with the specified name
-  //here  "AutoConnectAP"
-  //and goes into a blocking loop awaiting configuration
   wifiManager.setConfigPortalTimeout(180);
   wifiManager.autoConnect("RoyLightAP");
   write_to_log(wifiManager.getConfigPortalSSID());
-  //or use this for auto generated name ESP + ChipID
-  //wifiManager.autoConnect();
 }

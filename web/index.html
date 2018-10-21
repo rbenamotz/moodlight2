@@ -14,7 +14,9 @@
 					document.getElementById("rangeG").value = d.color.g;
 					document.getElementById("rangeB").value = d.color.b;
 					document.getElementById("chkAutoChange").checked = d.autoupdate.enabled;
+					document.getElementById("chkIsLightOn").checked = d.isLightOn;
 					document.getElementById("inputRange").value = d.autoupdate.interval;
+					document.getElementById("rangeBrightness").value = d.brightness;
 				}
 			});
 			xhr.send();
@@ -35,9 +37,11 @@
 			var r = document.getElementById("rangeR").value;
 			var g = document.getElementById("rangeG").value;
 			var b = document.getElementById("rangeB").value;
+			var brightness = document.getElementById("rangeBrightness").value;
+			var isLightOn = document.getElementById("chkIsLightOn").checked ? 1 : 0;
 			autoupdate.enabled = document.getElementById("chkAutoChange").checked ? 1 : 0;
 			autoupdate.interval = document.getElementById("inputRange").value;
-			var j = JSON.stringify({ "color": { "r": r, "g": g, "b": b }, "autoupdate": autoupdate });
+			var j = JSON.stringify({"isLightOn": isLightOn,  "color": { "r": r, "g": g, "b": b }, "autoupdate": autoupdate, "brightness" : brightness });
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/api/config");
 			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -47,7 +51,7 @@
 
 	</script>
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<title>Mood Light</title>
+	<title>Roy Light</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body {
@@ -78,14 +82,18 @@ input[type=range] {
 </head>
 
 <body onload="onload()">
-	<h1 style="text-align: center">Mood Light</h1>
+	<h1 style="text-align: center">Roy Light</h1>
 	<div class="divSection" id="divRange">
 		<input type="range" name="volume" min="0" max="255" id="rangeR" style="background-color: red" onChange="sendConfig()" />
 		<input type="range" name="volume" min="0" max="255" id="rangeG" style="background-color: green" onChange="sendConfig()" />
 		<input type="range" name="volume" min="0" max="255" id="rangeB" style="background-color: blue" onChange="sendConfig()" />
+		<input type="range" name="volume" min="0" max="100" id="rangeBrightness" style="background-color:gray" onChange="sendConfig()" />
+
 	</div>
 
 	<div class="divSection" id="divAutoControl" style="text-align: left">
+		<input type="checkbox" id="chkIsLightOn" onchange="sendConfig()">
+		<span>Light on?</span><br>
 		<input type="checkbox" id="chkAutoChange" onchange="sendConfig()">
 		<span>Change color automatically</span><br> <span>Interval
 			(seconds): <input type="text" value="60" onChange="sendConfig()" id="inputRange" pattern="\d*">

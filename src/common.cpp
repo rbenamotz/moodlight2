@@ -34,12 +34,13 @@ void setupCommon() {
   SetRandomSeed();
   globalState.isAutoChangeColor = true;
   globalState.isLightOn = true;
-  globalState.userSetColor[0] = PWMRANGE;
+  globalState.userSetColor[0] = 0;
   globalState.userSetColor[1] = 0;
-  globalState.userSetColor[2] = 0;
-  globalState.updateInternalSeconds = 10;
+  globalState.userSetColor[2] = PWMRANGE / 2;
+  globalState.updateInternalSeconds = 5;
   globalState.animationTimeMs = 500;
-  globalState.version = 0;
+  globalState.brightness = BRIGHTNESS_MAX / 2;
+  globalState.version = 1;
 
 }
 

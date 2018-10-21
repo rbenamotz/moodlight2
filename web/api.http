@@ -9,16 +9,18 @@ http://roylight.local/api/config
 POST http://roylight.local/api/config
 
 {
+  "isLightOn" : 0,
   "color": {
     "r": 255,
-    "g": 255,
+    "g": 0,
     "b": 0
   },
   "autoupdate": {
-    "enabled": 1,
+    "enabled": 0,
     "interval": 5
   },
-  "animationTimeMs" : 2000
+  "animationTimeMs" : 2000,
+  "brightness" : 100
 }
 
 ###
