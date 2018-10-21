@@ -7,6 +7,7 @@
 String log_buffer[LOG_SIZE];
 unsigned long log_buffer_ms[LOG_SIZE];
 int log_buffer_index = -1;
+moodLightState globalState;
 
 void SetRandomSeed()
 {
@@ -31,6 +32,15 @@ void setupCommon() {
     Serial.begin(115200);
   }
   SetRandomSeed();
+  globalState.isAutoChangeColor = true;
+  globalState.isLightOn = true;
+  globalState.userSetColor[0] = PWMRANGE;
+  globalState.userSetColor[1] = 0;
+  globalState.userSetColor[2] = 0;
+  globalState.updateInternalSeconds = 10;
+  globalState.animationTimeMs = 500;
+  globalState.version = 0;
+
 }
 
 void write_to_log(String line, ...) {

@@ -4,17 +4,20 @@
 #include "common.h"
 #include "user_config.h"
 #include "strip.h"
+#include "webserver.h"
 
 void setup() {
   setupCommon();
+  setupStrip();
   setupWifi();
   setupOta();
-  setupStrip();
+  setupWebServer();
 }
 
 void loop() {
   loopWifi();
   loopOta();
   loopStrip();
+  loopWebServer();
   delay(5);
 }

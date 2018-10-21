@@ -1,0 +1,26 @@
+http://roylight.local
+
+###
+
+http://roylight.local/api/config
+
+###
+
+POST http://roylight.local/api/config
+
+{
+  "color": {
+    "r": 255,
+    "g": 255,
+    "b": 0
+  },
+  "autoupdate": {
+    "enabled": 1,
+    "interval": 5
+  },
+  "animationTimeMs" : 2000
+}
+
+###
+
+http://roylight.local/log
